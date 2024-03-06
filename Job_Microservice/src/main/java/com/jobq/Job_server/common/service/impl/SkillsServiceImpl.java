@@ -31,6 +31,6 @@ public class SkillsServiceImpl implements SkillsService{
 
     @Override
     public Optional<SkillsDetails> createSkill(CreateSkillRequest createSkillRequest) {
-        return
+        return skillsWriteAl.createSkill(createSkillRequest);
     }
 }

@@ -10,6 +10,4 @@ public class SkillsDetails {
     @JsonProperty("skill_name")
     private String skillName;
 
-    @JsonProperty("domain_id")
-    private Long domainId;
 }
