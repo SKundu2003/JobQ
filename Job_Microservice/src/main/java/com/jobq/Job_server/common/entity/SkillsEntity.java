@@ -1,8 +1,10 @@
 package com.jobq.Job_server.common.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "skills")
 public class SkillsEntity {
     @Id
@@ -11,8 +13,5 @@ public class SkillsEntity {
 
     @Column(name = "skill_name")
     private String skillName;
-
-    @Column(name = "domain_id")
-    private Long domainId;
 
 }
