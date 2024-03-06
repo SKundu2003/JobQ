@@ -1,5 +1,6 @@
 package com.jobq.Job_server.common.controllers;
 
+import com.jobq.Job_server.common.request.CreateDomainRequest;
 import com.jobq.Job_server.common.response.handler.ResponseHandler;
 import com.jobq.Job_server.common.service.JobDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +32,9 @@ public class JobDomainController {
                 jobDomainService.findJobDomainById(id), org.springframework.http.HttpStatus.OK);
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createJobDomain(@RequestBody CreateDomainRequest createDomainRequest) {
+        return ResponseHandler.generateResponse("success", "Domain created successfully",
+                jobDomainService.createJobDomain(createDomainRequest), org.springframework.http.HttpStatus.OK);
+    }
 }

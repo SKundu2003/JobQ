@@ -1,16 +1,11 @@
-package com.jobq.Job_server.common.service;
+package com.jobq.Job_server.common.al.writeal;
 
 import com.jobq.Job_server.common.models.JobDomainDetails;
 import com.jobq.Job_server.common.request.CreateDomainRequest;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface JobDomainService {
-
-    Optional<JobDomainDetails> findJobDomainById(Long id);
-
-    Optional<List<JobDomainDetails>> fetchAllJobDomains(String jobDomainName);
+public interface JobDomainWriteAl {
 
     Optional<JobDomainDetails> createJobDomain(CreateDomainRequest createDomainRequest);
 }

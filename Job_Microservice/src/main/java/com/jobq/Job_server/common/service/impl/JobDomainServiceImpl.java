@@ -1,7 +1,9 @@
 package com.jobq.Job_server.common.service.impl;
 
 import com.jobq.Job_server.common.al.readal.JobDomainReadAl;
+import com.jobq.Job_server.common.al.writeal.JobDomainWriteAl;
 import com.jobq.Job_server.common.models.JobDomainDetails;
+import com.jobq.Job_server.common.request.CreateDomainRequest;
 import com.jobq.Job_server.common.service.JobDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,12 @@ public class JobDomainServiceImpl implements JobDomainService {
 
     private final JobDomainReadAl jobDomainReadAl;
 
+    private final JobDomainWriteAl jobDomainWriteAl;
+
     @Autowired
-    public JobDomainServiceImpl(JobDomainReadAl jobDomainReadAl) {
+    public JobDomainServiceImpl(JobDomainReadAl jobDomainReadAl,JobDomainWriteAl jobDomainWriteAl) {
         this.jobDomainReadAl = jobDomainReadAl;
+        this.jobDomainWriteAl = jobDomainWriteAl;
     }
 
     @Override
@@ -30,6 +35,10 @@ public class JobDomainServiceImpl implements JobDomainService {
     }
 
 
+    @Override
+    public Optional<JobDomainDetails> createJobDomain(CreateDomainRequest createDomainRequest){
+        return jobDomainWriteAl.createJobDomain(createDomainRequest);
+    }
 
 
 }
