@@ -30,6 +30,11 @@ public class SkillsServiceImpl implements SkillsService{
     }
 
     @Override
+    public Optional<SkillsDetails> findSkillById(Long id) {
+        return skillsReadAl.findSkillById(id);
+    }
+
+    @Override
     public Optional<SkillsDetails> createSkill(CreateSkillRequest createSkillRequest) {
         return skillsWriteAl.createSkill(createSkillRequest);
     }

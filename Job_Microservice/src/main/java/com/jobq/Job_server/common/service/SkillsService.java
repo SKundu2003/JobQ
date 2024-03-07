@@ -10,5 +10,7 @@ public interface SkillsService {
 
     Optional<List<SkillsDetails>> fetchAllSkills(String name);
 
+    Optional<SkillsDetails> findSkillById(Long id);
+
     Optional<SkillsDetails> createSkill(CreateSkillRequest createSkillRequest);
 }

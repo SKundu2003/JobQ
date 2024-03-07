@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -13,11 +15,13 @@ public class CreateJobRequest {
 
         private String description;
 
+        private String companyName;
+
         private String location;
 
-        private Long[] domainId;
+        private List<Long> domainIdsList;
 
-        private String domainNames;
+        private String domainName; //not needed from frontend
 
         private String type;
 
@@ -27,7 +31,7 @@ public class CreateJobRequest {
 
         private String experience;
 
-        private Long[] skillIds;
+        private List<Long> skillIdsList;
 
         private String skillNames;
 

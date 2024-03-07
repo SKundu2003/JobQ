@@ -106,7 +106,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Optional<JobDetails> createJob(CreateJobRequest createJobRequest){
         StringBuilder skillNames = new StringBuilder();
-        for (Long skillId : createJobRequest.getSkillIds()) {
+        for (Long skillId : createJobRequest.getSkillIdsList()) {
             Optional<SkillsDetails> skillById = skillsReadAl.findSkillById(skillId);
             if(!skillById.isPresent()){
                 LOGGER.error("No skill found with id: " + skillId);
@@ -115,10 +115,11 @@ public class JobServiceImpl implements JobService {
             skillNames.append(skillById.get().getSkillName());
             skillNames.append(",");
         }
+        skillNames.deleteCharAt(skillNames.length() - 1);
         createJobRequest.setSkillNames(skillNames.toString());
 
         StringBuilder domainNames = new StringBuilder();
-        for (Long domainId : createJobRequest.getDomainId()) {
+        for (Long domainId : createJobRequest.getDomainIdsList()) {
             Optional<JobDomainDetails> jobDomainById = jobDomainReadAl.findJobDomainById(domainId);
             if(!jobDomainById.isPresent()){
                 LOGGER.error("No domain found with id: " + domainId);
@@ -127,7 +128,8 @@ public class JobServiceImpl implements JobService {
             domainNames.append(jobDomainById.get().getDomainName());
             domainNames.append(",");
         }
-        createJobRequest.setDomainNames(domainNames.toString());
+        domainNames.deleteCharAt(domainNames.length() - 1);
+        createJobRequest.setDomainName(domainNames.toString());
 
         return jobWriteAl.createJob(createJobRequest);
     }

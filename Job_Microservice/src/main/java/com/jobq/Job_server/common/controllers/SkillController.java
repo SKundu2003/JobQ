@@ -23,6 +23,12 @@ public class SkillController {
                 skillService.fetchAllSkills(name), org.springframework.http.HttpStatus.OK);
     }
 
+    @GetMapping("/fetch/{id}")
+    public ResponseEntity<?> fetchSkillById(@PathVariable("id") Long id) {
+        return ResponseHandler.generateResponse("success", "Skill fetched successfully",
+                skillService.findSkillById(id), org.springframework.http.HttpStatus.OK);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createSkill(@RequestBody CreateSkillRequest createSkillRequest) {
         return ResponseHandler.generateResponse("success", "Skill created successfully",
