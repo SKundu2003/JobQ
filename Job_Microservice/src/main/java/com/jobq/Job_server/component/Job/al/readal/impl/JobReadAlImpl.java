@@ -33,6 +33,18 @@ public class JobReadAlImpl implements JobReadAl {
     @Override
     public Optional<List<JobDetails>> fetchRelevantJobs(Long[] domainIds, Long[] skillIds, String location, String jobType, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
 
+        System.err.println("domainIds: " + Arrays.toString(domainIds));
+        System.err.println("skillIds: " + Arrays.toString(skillIds));
+        System.err.println("location: " + location);
+        System.err.println("jobType: " + jobType);
+        System.err.println("salaryRageFrom: " + salaryRageFrom);
+        System.err.println("salaryRageTo: " + salaryRageTo);
+        System.err.println("pageSize: " + pageSize);
+        System.err.println("offset: " + offset);
+
+        StringBuilder domainIdsStr = new StringBuilder();
+        StringBuilder skillIdsStr = new StringBuilder();
+
         Optional<List<JobEntity>> jobEntities = jobRepository.fetchRelevantJobs(domainIds, skillIds, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
         if(jobEntities.isEmpty() || jobEntities.get().isEmpty()){
             LOGGER.error("No relevant jobs found");
