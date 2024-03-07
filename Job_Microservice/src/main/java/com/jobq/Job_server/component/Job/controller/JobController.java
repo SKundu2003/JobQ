@@ -18,13 +18,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/job",produces = MediaType.APPLICATION_JSON_VALUE) // it is used to define the controller path and the response type
-public class FindJobController {
+public class JobController {
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
 
     private final JobService jobService;
 
     @Autowired
-    public FindJobController(JobService jobService) {
+    public JobController(JobService jobService) {
         this.jobService = jobService;
     }
 

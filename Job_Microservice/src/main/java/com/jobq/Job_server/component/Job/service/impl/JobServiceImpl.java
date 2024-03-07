@@ -2,11 +2,10 @@ package com.jobq.Job_server.component.Job.service.impl;
 
 import com.jobq.Job_server.common.al.readal.JobDomainReadAl;
 import com.jobq.Job_server.common.al.readal.SkillsReadAl;
-import com.jobq.Job_server.common.al.writeal.JobDetailsWriteAl;
+import com.jobq.Job_server.common.al.writeal.JobDomainWriteAl;
 import com.jobq.Job_server.common.al.writeal.SkillsWriteAl;
 import com.jobq.Job_server.common.models.JobDomainDetails;
 import com.jobq.Job_server.common.models.SkillsDetails;
-import com.jobq.Job_server.common.utils.DateUtils;
 import com.jobq.Job_server.component.Job.al.readal.JobReadAl;
 import com.jobq.Job_server.component.Job.al.writeal.JobWriteAl;
 import com.jobq.Job_server.component.Job.module.JobDetails;
@@ -37,7 +36,7 @@ public class JobServiceImpl implements JobService {
 
     private final JobDomainReadAl jobDomainReadAl;
 
-    private final JobDetailsWriteAl jobDetailsWriteAl;
+    private final JobDomainWriteAl jobDomainWriteAl;
 
 
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
@@ -47,13 +46,13 @@ public class JobServiceImpl implements JobService {
     @Autowired
     public JobServiceImpl(JobWriteAl jobWriteAl, JobReadAl jobReadAl,
                           SkillsReadAl skillsReadAl, SkillsWriteAl skillsWriteAl,
-                          JobDomainReadAl jobDomainReadAl, JobDetailsWriteAl jobDetailsWriteAl) {
+                          JobDomainReadAl jobDomainReadAl, JobDomainWriteAl jobDomainWriteAl) {
         this.jobWriteAl = jobWriteAl;
         this.jobReadAl = jobReadAl;
         this.skillsReadAl = skillsReadAl;
         this.skillsWriteAl = skillsWriteAl;
         this.jobDomainReadAl = jobDomainReadAl;
-        this.jobDetailsWriteAl = jobDetailsWriteAl;
+        this.jobDomainWriteAl = jobDomainWriteAl;
 
     }
 
@@ -107,7 +106,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Optional<JobDetails> createJob(CreateJobRequest createJobRequest){
         StringBuilder skillNames = new StringBuilder();
-        for (Long skillId : createJobRequest.getSkillIds()) {
+        for (Long skillId : createJobRequest.getSkillIdsList()) {
             Optional<SkillsDetails> skillById = skillsReadAl.findSkillById(skillId);
             if(!skillById.isPresent()){
                 LOGGER.error("No skill found with id: " + skillId);
@@ -116,10 +115,11 @@ public class JobServiceImpl implements JobService {
             skillNames.append(skillById.get().getSkillName());
             skillNames.append(",");
         }
+        skillNames.deleteCharAt(skillNames.length() - 1);
         createJobRequest.setSkillNames(skillNames.toString());
 
         StringBuilder domainNames = new StringBuilder();
-        for (Long domainId : createJobRequest.getDomainId()) {
+        for (Long domainId : createJobRequest.getDomainIdsList()) {
             Optional<JobDomainDetails> jobDomainById = jobDomainReadAl.findJobDomainById(domainId);
             if(!jobDomainById.isPresent()){
                 LOGGER.error("No domain found with id: " + domainId);
@@ -128,7 +128,8 @@ public class JobServiceImpl implements JobService {
             domainNames.append(jobDomainById.get().getDomainName());
             domainNames.append(",");
         }
-        createJobRequest.setDomainNames(domainNames.toString());
+        domainNames.deleteCharAt(domainNames.length() - 1);
+        createJobRequest.setDomainName(domainNames.toString());
 
         return jobWriteAl.createJob(createJobRequest);
     }

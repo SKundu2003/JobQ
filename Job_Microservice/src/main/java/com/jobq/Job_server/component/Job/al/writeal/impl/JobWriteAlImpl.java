@@ -27,5 +27,6 @@ public class JobWriteAlImpl implements JobWriteAl {
         JobEntity jobEntity = JobEntity.getInstance(createJobRequest);
         JobEntity save = jobRepository.save(jobEntity);
         return Optional.ofNullable(MODEL_MAPPER.map(save, JobDetails.class));
+
     }
 }
