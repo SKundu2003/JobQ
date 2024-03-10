@@ -23,12 +23,6 @@ public class JobEntity {
 
     private String location;
 
-    @Column(name = "domain_id")
-    private String domainId;
-
-    @Column(name = "domain_name")
-    private String domainName; // IT, HR, etc
-
     @Column(name = "job_type")
     private String jobType;
 
@@ -39,12 +33,6 @@ public class JobEntity {
     private String salaryRageTo;
 
     private String experience;
-
-    @Column(name = "skill_ids")
-    private String skillIds;
-
-    @Column(name = "skill_names")
-    private String skillNames;
 
     private String createdBy;
 
@@ -61,10 +49,6 @@ public class JobEntity {
         String createdOn  = DateUtils.getItcDate();
 
         JobEntity map = MODEL_MAPPER.map(createJobRequest, JobEntity.class);
-        String domainId = createJobRequest.getDomainIdsList().toString().replace("[", "").replace("]", "");
-        String skillIds = createJobRequest.getSkillIdsList().toString().replace("[", "").replace("]", "");
-        map.setDomainId(domainId);
-        map.setSkillIds(skillIds);
         map.setCreatedOn(createdOn);
         map.setModifiedOn(createdOn);
         map.setIsDeleted(false);

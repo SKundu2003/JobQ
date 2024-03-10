@@ -42,8 +42,6 @@ public class JobReadAlImpl implements JobReadAl {
         System.err.println("pageSize: " + pageSize);
         System.err.println("offset: " + offset);
 
-        StringBuilder domainIdsStr = new StringBuilder();
-        StringBuilder skillIdsStr = new StringBuilder();
 
         Optional<List<JobEntity>> jobEntities = jobRepository.fetchRelevantJobs(domainIds, skillIds, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
         if(jobEntities.isEmpty() || jobEntities.get().isEmpty()){
@@ -61,8 +59,8 @@ public class JobReadAlImpl implements JobReadAl {
     }
 
     @Override
-    public Optional<Integer> countRelevantJobs(Long[] domainIds, Long[] skills, String location, String jobType, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
-        return jobRepository.countRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
+    public Optional<Integer> countRelevantJobs(Long[] domainIds, Long[] skills, String location, String jobType, String salaryRageFrom, String salaryRageTo) {
+        return jobRepository.countRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo);
     }
 
     @Override

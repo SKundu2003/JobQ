@@ -21,8 +21,6 @@ public class CreateJobRequest {
 
         private List<Long> domainIdsList;
 
-        private String domainName; //not needed from frontend
-
         private String type;
 
         private String salaryRageFrom;
@@ -33,7 +31,6 @@ public class CreateJobRequest {
 
         private List<Long> skillIdsList;
 
-        private String skillNames;
 
         private String createdBy = "1";
 

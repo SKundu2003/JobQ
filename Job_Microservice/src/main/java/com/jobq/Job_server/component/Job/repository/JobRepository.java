@@ -12,34 +12,44 @@ import java.util.Optional;
 public interface JobRepository extends JpaRepository<JobEntity, Long> {
 
     interface Meta{
-        String TABLE_NAME = "job";
-        String SHORT_INFO_OF_JOB_COLUMNS = "title, company_name, location, domain_name, job_type, salary_rage_to, salary_rage_from, experience, skill_names, is_deleted";
+        String JOB_TABLE_NAME = " job j ";
+        String DOMAIN_TABLE_NAME = " job_domain jd ";
 
-        String CONDITION_FOR_RELEVANT_JOBS = "is_deleted = false " +
-                " AND (CASE WHEN :domainIds IS NOT NULL THEN domain_id in :domainIds ELSE true END) " +
-                " AND (CASE WHEN :skills IS NOT NULL THEN skill_ids in :skills ELSE true END) " +
-                " AND (CASE WHEN :location IS NOT NULL THEN location = :location ELSE true END) " +
-                " AND (CASE WHEN :jobType IS NOT NULL THEN job_type = :jobType ELSE true END) " +
-                " AND (CASE WHEN :salaryRageFrom IS NOT NULL THEN salary_rage_from >= :salaryRageFrom ELSE true END) " +
-                " AND (CASE WHEN :salaryRageTo IS NOT NULL THEN salary_rage_to <= :salaryRageTo ELSE true END)";
+        String SKILL_TABLE_NAME = " skills s ";
+
+        String JOB_AND_SKILL_MAPPING_TABLE_NAME = " job_and_skill_mapping jsm ";
+
+        String JOB_AND_DOMAIN_MAPPING_TABLE_NAME = " job_and_domain_mapping jdm ";
+        String SHORT_INFO_OF_JOB_COLUMNS = " j.id, j.title, j.company_name, j.location, j.job_type, j.salary_rage_from, j.salary_rage_to, j.created_on, s.skill_name, jd.domain_name ";
+
+        String CONDITION_FOR_RELEVANT_JOBS = "j.is_deleted = false"+
+                " AND (case when :domainIds is null then true else j.id in (select jdm.job_id from "+JOB_AND_DOMAIN_MAPPING_TABLE_NAME+" where jdm.domain_id in (:domainIds)) end)"+
+                " AND (case when :skills is null then true else j.id in (select jsm.job_id from "+JOB_AND_SKILL_MAPPING_TABLE_NAME+" where jsm.skill_id in (:skills)) end)"+
+                " AND (case when :location is null then true else j.location like %:location%) end"+
+                " AND (case when :jobType is null then true else j.job_type = :jobType end)"+
+                " AND (case when :salaryRageTo is null then true else j.salary_rage_to >= :salaryRageTo end)"+
+                " AND (case when :salaryRageFrom is null then true else j.salary_rage_from <= :salaryRageFrom end)";
+
+
+
     }
 
-    String FETCH_INFO_OF_RELEVANT_JOBS = "SELECT * FROM "+Meta.TABLE_NAME +
+    String FETCH_INFO_OF_RELEVANT_JOBS = "SELECT "+ Meta.SHORT_INFO_OF_JOB_COLUMNS+ " FROM "+Meta.JOB_TABLE_NAME + Meta.JOB_AND_SKILL_MAPPING_TABLE_NAME + Meta.JOB_AND_DOMAIN_MAPPING_TABLE_NAME + Meta.SKILL_TABLE_NAME + Meta.DOMAIN_TABLE_NAME +
             " WHERE "+Meta.CONDITION_FOR_RELEVANT_JOBS +
             " ORDER BY created_on DESC " +
             " LIMIT :pageSize OFFSET :offset";
 
 
-    String COUNT_RELEVANT_JOBS = "SELECT count(*) FROM "+Meta.TABLE_NAME +
+    String COUNT_RELEVANT_JOBS = "SELECT "+ Meta.SHORT_INFO_OF_JOB_COLUMNS+ " FROM " +Meta.JOB_TABLE_NAME + Meta.JOB_AND_SKILL_MAPPING_TABLE_NAME + Meta.JOB_AND_DOMAIN_MAPPING_TABLE_NAME + Meta.SKILL_TABLE_NAME + Meta.DOMAIN_TABLE_NAME +
             " WHERE "+Meta.CONDITION_FOR_RELEVANT_JOBS +
-            " ORDER BY created_on DESC " +
-            " LIMIT :pageSize OFFSET :offset";
+            " ORDER BY created_on DESC ";
 
 
-    String FETCH_JOB_BY_ID = "SELECT * FROM " + Meta.TABLE_NAME + " WHERE id = :id AND is_deleted = false";
+    String FETCH_JOB_BY_ID = "SELECT "+ Meta.SHORT_INFO_OF_JOB_COLUMNS+ " FROM " +Meta.JOB_TABLE_NAME + Meta.JOB_AND_SKILL_MAPPING_TABLE_NAME + Meta.JOB_AND_DOMAIN_MAPPING_TABLE_NAME + Meta.SKILL_TABLE_NAME + Meta.DOMAIN_TABLE_NAME +
+            " WHERE j.id = :id AND j.is_deleted = false";
 
     @Query(value = FETCH_INFO_OF_RELEVANT_JOBS, nativeQuery = true)
-    Optional<List<JobEntity>> fetchRelevantJobs(@Param("domainIds") String domainIds, @Param("skills") String skillIds,
+    Optional<List<JobEntity>> fetchRelevantJobs(@Param("domainIds") Long[] domainIds, @Param("skills") Long[] skillIds,
                                                 @Param("location") String location, @Param("jobType") String jobType,
                                                 @Param("salaryRageFrom") String salaryRageFrom, @Param("salaryRageTo") String salaryRageTo,
                                                 @Param("pageSize") int pageSize, @Param("offset") int offset);
@@ -48,8 +58,7 @@ public interface JobRepository extends JpaRepository<JobEntity, Long> {
     @Query(value = COUNT_RELEVANT_JOBS, nativeQuery = true)
     Optional<Integer> countRelevantJobs(@Param("domainIds") Long[] domainIds, @Param("skills") Long[] skills,
                                        @Param("location") String location, @Param("jobType") String jobType,
-                                       @Param("salaryRageFrom") String salaryRageFrom, @Param("salaryRageTo") String salaryRageTo,
-                                       @Param("pageSize") int pageSize, @Param("offset") int offset);
+                                       @Param("salaryRageFrom") String salaryRageFrom, @Param("salaryRageTo") String salaryRageTo);
 
     @Query(value = FETCH_JOB_BY_ID, nativeQuery = true)
     Optional<JobEntity> fetchJobById(@Param("id") Long id);
