@@ -32,7 +32,7 @@ public class CreateJobRequest {
         private List<Long> skillIdsList;
 
 
-        private String createdBy = "1";
+        private Long createdBy = 1L;
 
         private String createdOn;
 

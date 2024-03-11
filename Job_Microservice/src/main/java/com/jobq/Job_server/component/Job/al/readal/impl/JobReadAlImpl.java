@@ -31,17 +31,7 @@ public class JobReadAlImpl implements JobReadAl {
     }
 
     @Override
-    public Optional<List<JobDetails>> fetchRelevantJobs(Long[] domainIds, Long[] skillIds, String location, String jobType, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
-
-        System.err.println("domainIds: " + Arrays.toString(domainIds));
-        System.err.println("skillIds: " + Arrays.toString(skillIds));
-        System.err.println("location: " + location);
-        System.err.println("jobType: " + jobType);
-        System.err.println("salaryRageFrom: " + salaryRageFrom);
-        System.err.println("salaryRageTo: " + salaryRageTo);
-        System.err.println("pageSize: " + pageSize);
-        System.err.println("offset: " + offset);
-
+    public Optional<List<JobDetails>> fetchRelevantJobs(List<Long> domainIds, List<Long> skillIds, String location, String jobType, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
 
         Optional<List<JobEntity>> jobEntities = jobRepository.fetchRelevantJobs(domainIds, skillIds, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
         if(jobEntities.isEmpty() || jobEntities.get().isEmpty()){
@@ -59,7 +49,7 @@ public class JobReadAlImpl implements JobReadAl {
     }
 
     @Override
-    public Optional<Integer> countRelevantJobs(Long[] domainIds, Long[] skills, String location, String jobType, String salaryRageFrom, String salaryRageTo) {
+    public Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String jobType, String salaryRageFrom, String salaryRageTo) {
         return jobRepository.countRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo);
     }
 

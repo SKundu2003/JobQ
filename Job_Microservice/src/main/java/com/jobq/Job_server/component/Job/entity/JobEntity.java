@@ -34,7 +34,7 @@ public class JobEntity {
 
     private String experience;
 
-    private String createdBy;
+    private Long createdBy = 1L;
 
     private String createdOn;
 
