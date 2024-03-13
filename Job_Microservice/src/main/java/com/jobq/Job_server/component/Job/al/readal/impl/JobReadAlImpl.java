@@ -1,5 +1,6 @@
 package com.jobq.Job_server.component.Job.al.readal.impl;
 
+import com.jobq.Job_server.component.Job.Dto.JobDetailsDto;
 import com.jobq.Job_server.component.Job.al.readal.JobReadAl;
 import com.jobq.Job_server.component.Job.entity.JobEntity;
 import com.jobq.Job_server.component.Job.module.JobDetails;
@@ -31,30 +32,24 @@ public class JobReadAlImpl implements JobReadAl {
     }
 
     @Override
-    public Optional<List<JobDetails>> fetchRelevantJobs(List<Long> domainIds, List<Long> skillIds, String location, String jobType, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
+    public Optional<List<JobDetailsDto>> fetchRelevantJobs(List<Long> domainIds, List<Long> skillIds, String location, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
 
-        Optional<List<JobEntity>> jobEntities = jobRepository.fetchRelevantJobs(domainIds, skillIds, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
+        Optional<List<JobDetailsDto>> jobEntities = jobRepository.fetchRelevantJobs(domainIds, skillIds, location, salaryRageFrom, salaryRageTo, pageSize, offset);
         if(jobEntities.isEmpty() || jobEntities.get().isEmpty()){
             LOGGER.error("No relevant jobs found");
             return Optional.empty();
         }
         LOGGER.info("job found");
-
-        List<JobDetails> jobDetailsList = new ArrayList<>();
-        for (JobEntity job : jobEntities.get()){
-            JobDetails jobDetails = MODEL_MAPPER.map(job,JobDetails.class);
-            jobDetailsList.add(jobDetails);
-        }
-        return Optional.of(jobDetailsList);
+        return jobEntities;
     }
 
     @Override
-    public Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String jobType, String salaryRageFrom, String salaryRageTo) {
-        return jobRepository.countRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo);
+    public Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String salaryRageFrom, String salaryRageTo) {
+        return jobRepository.countRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo);
     }
 
     @Override
-    public Optional<JobDetails> fetchJobById(Long id) {
-        return Optional.ofNullable(MODEL_MAPPER.map(jobRepository.fetchJobById(id), JobDetails.class));
+    public Optional<JobDetailsDto> fetchJobById(Long id) {
+        return Optional.ofNullable(MODEL_MAPPER.map(jobRepository.fetchJobById(id), JobDetailsDto.class));
     }
 }

@@ -5,6 +5,7 @@ import com.jobq.Job_server.component.Job.module.JobDetails;
 import com.jobq.Job_server.component.Job.request.CreateJobRequest;
 import com.jobq.Job_server.component.Job.request.FindJobRequest;
 import com.jobq.Job_server.component.Job.response.CompleteJobDetailsResponse;
+import com.jobq.Job_server.component.Job.response.CreateJobResponse;
 import com.jobq.Job_server.component.Job.response.JobDetailsResponse;
 import com.jobq.Job_server.component.Job.service.JobService;
 import org.modelmapper.ModelMapper;
@@ -53,7 +54,7 @@ public class JobController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createJob(@RequestBody CreateJobRequest createJobRequest) {
-        Optional<JobDetails> jobDetailsResponse = jobService.createJob(createJobRequest);
+        Optional<CreateJobResponse> jobDetailsResponse = jobService.createJob(createJobRequest);
         if(!jobDetailsResponse.isPresent()){
             return ResponseHandler.generateResponse("failure", "Job creation failed", null, HttpStatus.BAD_REQUEST);
         }

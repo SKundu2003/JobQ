@@ -21,7 +21,7 @@ public class FindJobRequest {
     @JsonProperty("location")
     private String location;
 
-    @JsonProperty("jobType")
+    @JsonProperty("job_type")
     private String jobType; //part-time, full-time, contract
 
     @JsonProperty("salary_rage_to")

@@ -6,6 +6,7 @@ import com.jobq.Job_server.common.al.writeal.JobDomainWriteAl;
 import com.jobq.Job_server.common.al.writeal.SkillsWriteAl;
 import com.jobq.Job_server.common.models.JobDomainDetails;
 import com.jobq.Job_server.common.models.SkillsDetails;
+import com.jobq.Job_server.component.Job.Dto.JobDetailsDto;
 import com.jobq.Job_server.component.Job.al.readal.JobAndDomainMappingReadAl;
 import com.jobq.Job_server.component.Job.al.readal.JobAndSkillMappingReadAl;
 import com.jobq.Job_server.component.Job.al.readal.JobReadAl;
@@ -68,9 +69,9 @@ public class JobServiceImpl implements JobService {
     }
 
 
-    private Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String jobType, String salaryRageFrom, String salaryRageTo, int pageSize, int offset){
+    private Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String salaryRageFrom, String salaryRageTo, int pageSize, int offset){
 
-        return jobReadAl.countRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo);
+        return jobReadAl.countRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo);
     }
 
     @Override
@@ -84,12 +85,12 @@ public class JobServiceImpl implements JobService {
         int pageSize = jobRequest.getPageSize();
         int offset = (jobRequest.getPageNumber() - 1) * pageSize;
 
-        Optional<List<JobDetails>> jobDetails = jobReadAl.fetchRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
+        Optional<List<JobDetailsDto>> jobDetails = jobReadAl.fetchRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo, pageSize, offset);
         if(!jobDetails.isPresent()){
             LOGGER.error("No relevant jobs found");
             return Optional.empty();
         }
-        Optional<Integer> countOfJobs = countRelevantJobs(domainIds, skills, location, jobType, salaryRageFrom, salaryRageTo, pageSize, offset);
+        Optional<Integer> countOfJobs = countRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo, pageSize, offset);
         if(!countOfJobs.isPresent()){
             LOGGER.error("Unable to count relevant jobs");
             return Optional.empty();
@@ -106,7 +107,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Optional<CompleteJobDetailsResponse> fetchJobById(Long id){
-        Optional<JobDetails> jobDetails = jobReadAl.fetchJobById(id);
+        Optional<JobDetailsDto> jobDetails = jobReadAl.fetchJobById(id);
         if(!jobDetails.isPresent()){
             LOGGER.error("No job found with id: " + id);
             return Optional.empty();
