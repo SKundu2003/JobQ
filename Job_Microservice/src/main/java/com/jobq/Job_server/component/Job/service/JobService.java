@@ -17,4 +17,8 @@ public interface JobService {
 
     Optional<CreateJobResponse> createJob(CreateJobRequest createJobRequest);
 
+    /*
+     TO DO : fetch user id from jwt token (context)
+    * */
+    Optional<Boolean> applyJob(Long jobId);
 }

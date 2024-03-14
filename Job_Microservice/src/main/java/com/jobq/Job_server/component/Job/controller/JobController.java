@@ -61,4 +61,14 @@ public class JobController {
         return ResponseHandler.generateResponse("success", "Job created", jobDetailsResponse.get(), HttpStatus.OK);
     }
 
+    @PostMapping("/apply/{jobId}")
+    public ResponseEntity<?> applyJob(@PathVariable Long jobId) {
+        Optional<Boolean> isApplied = jobService.applyJob(jobId);
+        if(!isApplied.isPresent()){
+            return ResponseHandler.generateResponse("failure", "Already applied", null, HttpStatus.BAD_REQUEST);
+        }
+        return ResponseHandler.generateResponse("success", "Job applied", isApplied.get(), HttpStatus.OK);
+    }
+
+
 }

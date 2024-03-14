@@ -10,6 +10,7 @@ import com.jobq.Job_server.component.Job.Dto.JobDetailsDto;
 import com.jobq.Job_server.component.Job.al.readal.JobAndDomainMappingReadAl;
 import com.jobq.Job_server.component.Job.al.readal.JobAndSkillMappingReadAl;
 import com.jobq.Job_server.component.Job.al.readal.JobReadAl;
+import com.jobq.Job_server.component.Job.al.writeal.ApplyJobWriteAl;
 import com.jobq.Job_server.component.Job.al.writeal.JobWriteAl;
 import com.jobq.Job_server.component.Job.module.JobAndDomainMappingDetails;
 import com.jobq.Job_server.component.Job.module.JobAndSkillMappingDetails;
@@ -48,6 +49,8 @@ public class JobServiceImpl implements JobService {
 
     private final JobAndSkillMappingReadAl jobAndSkillMappingReadAl;
 
+    private final ApplyJobWriteAl applyJobWriteAl;
+
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
@@ -56,7 +59,8 @@ public class JobServiceImpl implements JobService {
     public JobServiceImpl(JobWriteAl jobWriteAl, JobReadAl jobReadAl,
                           SkillsReadAl skillsReadAl, SkillsWriteAl skillsWriteAl,
                           JobDomainReadAl jobDomainReadAl, JobDomainWriteAl jobDomainWriteAl,
-                          JobAndDomainMappingReadAl jobAndDomainMappingReadAl, JobAndSkillMappingReadAl jobAndSkillMappingReadAl) {
+                          JobAndDomainMappingReadAl jobAndDomainMappingReadAl, JobAndSkillMappingReadAl jobAndSkillMappingReadAl,
+                          ApplyJobWriteAl applyJobWriteAl) {
         this.jobWriteAl = jobWriteAl;
         this.jobReadAl = jobReadAl;
         this.skillsReadAl = skillsReadAl;
@@ -65,17 +69,17 @@ public class JobServiceImpl implements JobService {
         this.jobDomainWriteAl = jobDomainWriteAl;
         this.jobAndDomainMappingReadAl = jobAndDomainMappingReadAl;
         this.jobAndSkillMappingReadAl = jobAndSkillMappingReadAl;
-
+        this.applyJobWriteAl = applyJobWriteAl;
     }
 
 
-    private Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String salaryRageFrom, String salaryRageTo, int pageSize, int offset){
+    private Optional<Integer> countRelevantJobs(List<Long> domainIds, List<Long> skills, String location, String salaryRageFrom, String salaryRageTo, int pageSize, int offset) {
 
         return jobReadAl.countRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo);
     }
 
     @Override
-    public Optional<JobDetailsResponse> fetchRelevantJobs(FindJobRequest jobRequest){
+    public Optional<JobDetailsResponse> fetchRelevantJobs(FindJobRequest jobRequest) {
         List<Long> domainIds = jobRequest.getDomainIds();
         List<Long> skills = jobRequest.getSkillsIds();
         String location = jobRequest.getLocation();
@@ -86,12 +90,12 @@ public class JobServiceImpl implements JobService {
         int offset = (jobRequest.getPageNumber() - 1) * pageSize;
 
         Optional<List<JobDetailsDto>> jobDetails = jobReadAl.fetchRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo, pageSize, offset);
-        if(!jobDetails.isPresent()){
+        if (!jobDetails.isPresent()) {
             LOGGER.error("No relevant jobs found");
             return Optional.empty();
         }
         Optional<Integer> countOfJobs = countRelevantJobs(domainIds, skills, location, salaryRageFrom, salaryRageTo, pageSize, offset);
-        if(!countOfJobs.isPresent()){
+        if (!countOfJobs.isPresent()) {
             LOGGER.error("Unable to count relevant jobs");
             return Optional.empty();
         }
@@ -106,9 +110,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Optional<CompleteJobDetailsResponse> fetchJobById(Long id){
+    public Optional<CompleteJobDetailsResponse> fetchJobById(Long id) {
         Optional<JobDetailsDto> jobDetails = jobReadAl.fetchJobById(id);
-        if(!jobDetails.isPresent()){
+        if (!jobDetails.isPresent()) {
             LOGGER.error("No job found with id: " + id);
             return Optional.empty();
         }
@@ -116,16 +120,16 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Optional<CreateJobResponse> createJob(CreateJobRequest createJobRequest){
+    public Optional<CreateJobResponse> createJob(CreateJobRequest createJobRequest) {
         Optional<JobDetails> job = jobWriteAl.createJob(createJobRequest);
-        if(!job.isPresent()){
+        if (!job.isPresent()) {
             LOGGER.error("Job creation failed");
             return Optional.empty();
         }
         Optional<List<JobAndDomainMappingDetails>> jobAndDomainMappingDetails = jobAndDomainMappingReadAl.fetchJobAndDomainMappingDetails(job.get().getId());
         Optional<List<JobAndSkillMappingDetails>> jobAndSkillMappingDetails = jobAndSkillMappingReadAl.fetchJobAndSkillMappingByJobId(job.get().getId());
 
-        if(!jobAndDomainMappingDetails.isPresent() || !jobAndSkillMappingDetails.isPresent()){
+        if (!jobAndDomainMappingDetails.isPresent() || !jobAndSkillMappingDetails.isPresent()) {
             LOGGER.error("No domain or skill mapping found for job id: " + job.get().getId());
             return Optional.empty();
         }
@@ -142,6 +146,16 @@ public class JobServiceImpl implements JobService {
     }
 
 
+    /*
+    TO DO : fetch user id from jwt token (context)
+  `* */
+    @Override
+    public Optional<Boolean> applyJob(Long jobId) {
+        //user id will be fetched from jwt token
+        Long userId = 1L;
+
+        return applyJobWriteAl.applyJob(userId,jobId);
+    }
 }
 
 
