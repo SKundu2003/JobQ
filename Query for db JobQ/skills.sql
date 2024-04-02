@@ -6,6 +6,6 @@ CREATE TABLE `skills` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 -- Inserting dummy data
--- INSERT INTO `skills` (`skill_name`) VALUES
--- ('Java Programming'),
--- ('Recruitment');
+INSERT INTO `skills` (`skill_name`) VALUES
+('Java Programming'),
+('Recruitment');
